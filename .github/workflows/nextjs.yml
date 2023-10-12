@@ -5,9 +5,9 @@
 name: Deploy Next.js site to Pages
 
 on:
-  # Runs on pushes targeting the default branch
-  pullrequest:
-    branches: ["main"]
+  pull_request:
+    types: [closed]
+    branches: [main]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -27,6 +27,7 @@ concurrency:
 jobs:
   # Build job
   build:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -88,6 +89,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
     needs: build
     steps:
       - name: Deploy to GitHub Pages
